@@ -59,6 +59,8 @@
     disabled=no idle-timeout=5m interface=wlan2 keepalive-timeout=none\
     name=hotspot1 profile=hsprof1
   walled-garden ip add action=accept disabled=no dst-address=192.168.182.1
+  walled-garden add dst-host=":^www\\.google\\..{2,3}\$" dst-port=443 comment="Google"
+  walled-garden add dst-host="support.google.com" dst-port=443 comment="Google"
   user add disabled=no name=admin password=1234 profile=default
 }
 
