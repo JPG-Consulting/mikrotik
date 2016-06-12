@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mikrotik Hotspot - Login</title>
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="assets/html5shiv/html5shiv.min.js"></script>
+      <script src="assets/respond/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+	<!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">$(identity)</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+          $(if logged-in == 'yes')
+            <li><a href="$(link-status)">Status</a></li>
+		  	<li><a href="$(link-logout)?erase-cookie=true">Logout</a></li>
+		  $(else)
+			<li class="active"><a href="$(link-login-only)">Login <span class="sr-only">(current)</span></a></li>
+		  $(endif)
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    
+    <div class="container">
+    	<div class="row">
+            $(if error)
+                <div class="alert alert-danger">$(error)</div>
+            $(endif)
+
+            <div class="alert alert-info">Please log on to use the hotspot service.</div>
+
+            $(if trial == 'yes')
+                <div class="alert alert-info">
+                    Free trial available, <a href="$(link-login-only)?dst=$(link-orig-esc)&amp;username=T-$(mac-esc)">click here</a>.
+                </div>
+            $(endif)
+        </div>
+
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <form id="loginForm" class="form-horizontal" role="form" action="$(link-login-only)" method="post">
+                        <input type="hidden" name="dst" value="$(link-orig)"/>
+                        <input type="hidden" name="popup" value="true"/>
+
+                        <div class="form-group">
+                            <label for="inputLogin" class="col-sm-1 control-label">Login</label>
+
+                            <div class="col-sm-11">
+                                <input type="text" class="form-control input-lg" id="inputLogin" name="username"
+                                       placeholder="Login" autofocus required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword" class="col-sm-1 control-label">Password</label>
+
+                            <div class="col-sm-11">
+                                <input type="password" class="form-control input-lg" id="inputPassword" name="password"
+                                       placeholder="Password" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-1 col-sm-11">
+                                <button type="submit" class="btn btn-primary btn-block btn-lg">OK</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer id="footer">
+    	<div class="container">
+        	<p class="text-muted">Powered by MikroTik RouterOS</p>
+    	</div>
+    </footer>
+    
+	<script src="assets/jquery/jquery.min.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+	$(if chap-id)
+    <script type="text/javascript" src="js/md5.js"></script>
+    <script type="text/javascript">
+        $('#loginForm').submit(function () {
+            var password = $('#inputPassword');
+            password.val(hexMD5('$(chap-id)' + password.val() + '$(chap-challenge)'));
+        });
+    </script>
+	$(endif)
+</body>
+</html>

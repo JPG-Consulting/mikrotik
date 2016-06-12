@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mikrotik Hotspot - Status</title>
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="assets/html5shiv/html5shiv.min.js"></script>
+      <script src="assets/respond/respond.min.js"></script>
+    <![endif]-->
+    <script language="JavaScript">
+	<!--
+	$(if advert-pending == 'yes')
+	    var popup = '';
+	    function focusAdvert() {
+		if (window.focus) popup.focus();
+	    }
+	    function openAdvert() {
+		popup = open('$(link-advert)', 'hotspot_advert', '');
+		setTimeout("focusAdvert()", 1000);
+	    }
+	$(endif)
+	    function openLogout() {
+		if (window.name != 'hotspot_status') return true;
+	        open('$(link-logout)', 'hotspot_logout', 'toolbar=0,location=0,directories=0,status=0,menubars=0,resizable=1,width=280,height=250');
+		window.close();
+		return false;
+	    }
+	//-->
+	</script>
+</head>
+$(if advert-pending == 'yes') 
+<body onLoad="openAdvert()">
+$(else)
+<body>
+$(endif)>
+
+	<!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">$(identity)</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+          $(if logged-in == 'yes')
+            <li class="active"><a href="$(link-status)">Status <span class="sr-only">(current)</span></a></li>
+		  	<li><a href="$(link-logout)?erase-cookie=true">Logout</a></li>
+		  $(else)
+			<li><a href="$(link-login-only)">Login</a></li>
+		  $(endif)
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    
+    <div class="container">
+    	<div class="row">
+            $(if error)
+                <div class="alert alert-danger">$(error)</div>
+            $(endif)
+
+            $(if login-by == 'trial')
+                <div class="alert alert-info">Welcome trial user!</div>
+            $(elif login-by != 'mac')
+                <div class="alert alert-info">Welcome $(username)!</div>
+            $(endif)
+        </div>
+
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <table class="table table-striped">
+                        <tbody>
+                        <tr>
+                            <td>IP address:</td>
+                            <td>$(ip)</td>
+                        </tr>
+                        <tr>
+                            <td>bytes up/down</td>
+                            <td>$(bytes-in-nice) / $(bytes-out-nice)</td>
+                        </tr>
+                        $(if session-time-left)
+                        <tr>
+                            <td>connected / left:</td>
+                            <td>$(uptime) / $(session-time-left)</td>
+                        </tr>
+                        $(else)
+                        <tr>
+                            <td>connected:</td>
+                            <td>$(uptime)</td>
+                        </tr>
+                        $(endif)
+                        $(if blocked == 'yes')
+						<tr>
+							<td>status:</td>
+							<td><div style="color: #FF8080"><a href="$(link-advert)" target="hotspot_advert">advertisement</a> required</div></td>
+						</tr>	
+						$(elif refresh-timeout)
+                        <tr>
+                            <td>status refresh:</td>
+                            <td>$(refresh-timeout)</td>
+                        </tr>
+                        $(endif)
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        $(if login-by-mac != 'yes')
+		<div class="row">
+			<form action="$(link-logout)" name="logout" onSubmit="return openLogout()">
+				<!-- user manager link. if user manager resides on other router, replace $(hostname) by its address
+				<button onclick="document.location='http://$(hostname)/user?subs='; return false;">status</button>
+				<!-- end of user manager link -->
+				<input type="hidden" name="erase-cookie" value="true" />
+				<input type="submit" class="btn btn-lg btn-primary btn-block" value="log off">
+			</form>
+		</div>
+		$(endif)
+    
+    </div>
+    
+    
+    <footer id="footer">
+    	<div class="container">
+        	<p class="text-muted">Powered by MikroTik RouterOS</p>
+    	</div>
+    </footer>
+    
+	<script src="assets/jquery/jquery.min.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
