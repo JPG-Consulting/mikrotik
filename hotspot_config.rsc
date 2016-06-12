@@ -125,6 +125,11 @@
 /ip neighbor discovery set [find name="ether1"] discover=no
 /ip neighbor discovery set [find name="wlan2"] discover=no
 
+/tool mac-server add disabled=yes interface=[find name="ether1"]
+/tool mac-server mac-winbox add interface=[find name="ether1"] disabled=yes
+/tool mac-server add disabled=yes interface=[find name="wlan2"]
+/tool mac-server mac-winbox add interface=[find name="wlan2"] disabled=yes
+
 /tool mac-server disable [find];
 /tool mac-server mac-winbox disable [find];
 :foreach k in=[/interface find where !(slave=yes  || name~"ether1" || name~"wlan2")] do={
